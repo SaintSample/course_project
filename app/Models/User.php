@@ -22,6 +22,16 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $fillable = [
+        'last_name',
+        'name',
+        'second_name',
+        'maiden_name',
+        'birthday_at',
+        'room',
+        'email'
+    ];
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -30,6 +40,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //======Relations======
 
     public function passports(): HasMany
     {
@@ -54,5 +66,39 @@ class User extends Authenticatable
     public function vacations(): HasMany
     {
         return $this->hasMany(Vacation::class, 'user_id');
+    }
+
+    //======Auth=====
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+    //======Methods======
+
+    /**
+     * Get the full name of user
+     *
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        return $this->last_name . ' ' . $this->name . ' ' . $this->second_name;
     }
 }

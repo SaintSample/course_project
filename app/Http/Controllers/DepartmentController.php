@@ -2,18 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DepartmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = Department::query()
+            ->with($request->input('_with'));
+        if ($page = $request->input('page')) {
+            return DepartmentResource::collection($query->paginate($page, 10));
+        } else {
+            return DepartmentResource::collection($query->get());
+        }
 
     }
 
@@ -25,7 +34,7 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
