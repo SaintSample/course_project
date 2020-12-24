@@ -12,74 +12,53 @@ class UserPhoneController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $query = UserPhone::query();
+        if ($page = $request->input('page')) {
+            return \response()->json($query->paginate($page, 10)->toArray());
+        } else {
+            return \response()->json($query->get());
+        }
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
-    }
+        $phone = new UserPhone();
+        $phone->fill($request->toArray());
+        $phone->save();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\UserPhone  $userPhone
-     * @return \Illuminate\Http\Response
-     */
-    public function show(UserPhone $userPhone)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\UserPhone  $userPhone
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(UserPhone $userPhone)
-    {
-        //
+        return response()->json(['message' => 'Successfully registration!']);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\UserPhone  $userPhone
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\UserAddress $address
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UserPhone $userPhone)
+    public function update(Request $request, UserPhone $phone)
     {
-        //
+        $phone->fill($request->toArray());
+        return \response()->json($phone->toArray());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\UserPhone  $userPhone
+     * @param \App\Models\UserPhone $address
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UserPhone $userPhone)
+    public function destroy(UserPhone $phone)
     {
-        //
+        $phone->delete();
+        return \response()->json($phone->toArray());
     }
 }

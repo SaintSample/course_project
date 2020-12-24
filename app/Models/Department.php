@@ -23,25 +23,18 @@ class Department extends Model
         'deleted_at'
     ];
 
-    public function work_conditions(): HasMany
-    {
-        return $this->hasMany(WorkCondition::class, 'department_id');
-    }
-
     public function manager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'manager');
     }
 
-    public function users(): HasManyThrough
+    public function users(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             User::class,
-            WorkCondition::class,
+            'users_departments',
             'department_id',
-            'id',
-            'id',
-            'id'
+            'user_id'
         );
     }
 }

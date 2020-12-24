@@ -12,19 +12,14 @@ class UserAddressController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $query = UserAddress::query();
+        if ($page = $request->input('page')) {
+            return \response()->json($query->paginate($page, 10)->toArray());
+        } else {
+            return \response()->json($query->get());
+        }
     }
 
     /**
@@ -35,51 +30,35 @@ class UserAddressController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $address = new UserAddress();
+        $address->fill($request->toArray());
+        $address->save();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\UserAddress  $userAddress
-     * @return \Illuminate\Http\Response
-     */
-    public function show(UserAddress $userAddress)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\UserAddress  $userAddress
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(UserAddress $userAddress)
-    {
-        //
+        return response()->json(['message' => 'Successfully registration!']);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\UserAddress  $userAddress
+     * @param  \App\Models\UserAddress  $address
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UserAddress $userAddress)
+    public function update(Request $request, UserAddress $address)
     {
-        //
+        $address->fill($request->toArray());
+        return \response()->json($address->toArray());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\UserAddress  $userAddress
+     * @param  \App\Models\UserAddress  $address
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UserAddress $userAddress)
+    public function destroy(UserAddress $address)
     {
-        //
+        $address->delete();
+        return \response()->json($address->toArray());
     }
 }

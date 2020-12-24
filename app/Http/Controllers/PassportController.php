@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PassportResource;
 use App\Models\Passport;
 use Illuminate\Http\Request;
 
@@ -10,76 +11,69 @@ class PassportController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Passport::query()
+            ->with($request->input('_with'));
+        if ($page = $request->input('page')) {
+            return \response()->json($query->paginate($page, 10)->toArray());
+        } else {
+            return \response()->json($query->get());
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-        //
+        $passport = new Passport();
+        $passport->fill($request->toArray());
+        $passport->save();
+        return \response()->json($passport->toArray());
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Passport  $passport
-     * @return \Illuminate\Http\Response
+     * @param  Passport  $passport
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Passport $passport)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Passport  $passport
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Passport $passport)
-    {
-        //
+        return \response()->json($passport->toArray());
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Passport  $passport
-     * @return \Illuminate\Http\Response
+     * @param  Passport  $passport
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, Passport $passport)
     {
-        //
+        $passport->fill($request->toArray());
+        $passport->save();
+        return \response()->json($passport->toArray());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Passport  $passport
-     * @return \Illuminate\Http\Response
+     * @param Passport $passport
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function destroy(Passport $passport)
+    public function destroy(Passport $passport): \Illuminate\Http\JsonResponse
     {
-        //
+        $passport->delete();
+        return \response()->json($passport->toArray());
     }
 }
