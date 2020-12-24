@@ -10,21 +10,17 @@ class VacationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $query = Vacation::query()
+            ->with($request->input('_with'));
+        if ($page = $request->input('page')) {
+            return \response()->json($query->paginate($page, 10)->toArray());
+        } else {
+            return \response()->json($query->get());
+        }
     }
 
     /**
@@ -35,7 +31,7 @@ class VacationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**

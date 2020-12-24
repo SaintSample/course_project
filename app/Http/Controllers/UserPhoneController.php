@@ -34,7 +34,7 @@ class UserPhoneController extends Controller
         $phone->fill($request->toArray());
         $phone->save();
 
-        return response()->json(['message' => 'Successfully registration!']);
+        return response()->json($phone->toArray());
     }
 
     /**
